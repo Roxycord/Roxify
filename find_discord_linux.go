@@ -60,6 +60,8 @@ func init() {
 		path.Join(Home, ".local/share"),
 		path.Join(Home, ".local/bin"),
 		path.Join(Home, ".dvm"),
+		path.Join(Home, ".config"),
+		path.Join(Home, ".var/app"),
 		"/var/lib/flatpak/app",
 		path.Join(Home, "/.local/share/flatpak/app"),
 	}
