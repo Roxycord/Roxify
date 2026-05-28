@@ -53,6 +53,7 @@ func init() {
 
 	DiscordDirs = []string{
 		"/usr/share",
+		"/usr/lib",
 		"/usr/lib64",
 		"/opt",
 		path.Join(Home, "Applications"),
@@ -84,10 +85,14 @@ func ParseDiscordNew(p, branch string, isFlatpak bool) *DiscordInstall {
 			if !ExistsFile(resources) {
 				continue
 			}
+			dirIsPatched := ExistsFile(path.Join(resources, "_app.asar"))
+			if !dirIsPatched && !ExistsFile(path.Join(resources, "app.asar")) {
+				continue
+			}
 			app := path.Join(resources, "app")
 			if app > appPath {
 				appPath = app
-				isPatched = ExistsFile(path.Join(resources, "_app.asar"))
+				isPatched = dirIsPatched
 			}
 		}
 	}
@@ -149,11 +154,21 @@ func ParseDiscord(p, _ string) *DiscordInstall {
 
 func FindDiscords() []any {
 	var discords []any
+	seenDir := make(map[string]bool)
 	for _, dir := range DiscordDirs {
-		children, err := os.ReadDir(dir)
+		resolvedDir, err := path.EvalSymlinks(dir)
+		if err != nil {
+			continue
+		}
+		if seenDir[resolvedDir] {
+			continue
+		}
+		seenDir[resolvedDir] = true
+
+		children, err := os.ReadDir(resolvedDir)
 		if err != nil {
 			if !errors.Is(err, os.ErrNotExist) {
-				Log.Warn("Error during readdir "+dir+":", err)
+				Log.Warn("Error during readdir "+resolvedDir+":", err)
 			}
 			continue
 		}
@@ -164,7 +179,7 @@ func FindDiscords() []any {
 				continue
 			}
 
-			discordDir := path.Join(dir, name)
+			discordDir := path.Join(resolvedDir, name)
 			if discord := ParseDiscord(discordDir, ""); discord != nil {
 				Log.Debug("Found Discord install at ", discordDir)
 				discords = append(discords, discord)
