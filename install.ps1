@@ -1,6 +1,6 @@
-$link = "https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli.exe"
+$link = "https://github.com/Roxycord/Roxify/releases/latest/download/RoxifyCli.exe"
 
-$outfile = "$env:TEMP\EquilotlCli.exe"
+$outfile = "$env:TEMP\RoxifyCli.exe"
 
 Write-Output "Downloading installer to $outfile"
 

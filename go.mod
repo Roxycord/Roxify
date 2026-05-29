@@ -1,4 +1,4 @@
-module equilotl
+module roxify
 
 go 1.26.2
 

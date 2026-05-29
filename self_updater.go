@@ -7,7 +7,7 @@
 package main
 
 import (
-	"equilotl/buildinfo"
+	"roxify/buildinfo"
 	"errors"
 	"fmt"
 	"io"
@@ -46,22 +46,22 @@ func init() {
 }
 
 func GetInstallerDownloadLink() string {
-	const BaseUrl = "https://github.com/Equicord/Equilotl/releases/latest/download/"
+	const BaseUrl = "https://github.com/Roxycord/Roxify/releases/latest/download/"
 	switch runtime.GOOS {
 	case "windows":
-		filename := Ternary(buildinfo.UiType == buildinfo.UiTypeCli, "EquilotlCli.exe", "Equilotl.exe")
+		filename := Ternary(buildinfo.UiType == buildinfo.UiTypeCli, "RoxifyCli.exe", "Roxify.exe")
 		return BaseUrl + filename
 	case "darwin":
 		switch runtime.GOARCH {
 		case "amd64":
-			return BaseUrl + "Equilotl-darwin-x64.zip"
+			return BaseUrl + "Roxify-darwin-x64.zip"
 		case "arm64":
-			return BaseUrl + "Equilotl-darwin-arm64.zip"
+			return BaseUrl + "Roxify-darwin-arm64.zip"
 		default:
 			return ""
 		}
 	case "linux":
-		return BaseUrl + "EquilotlCli-linux"
+		return BaseUrl + "RoxifyCli-linux"
 	default:
 		return ""
 	}
@@ -97,7 +97,7 @@ func UpdateSelf() error {
 	}
 	defer res.Body.Close()
 
-	tmp, err := os.CreateTemp(ownExeDir, "EquilotlUpdate")
+	tmp, err := os.CreateTemp(ownExeDir, "RoxifyUpdate")
 	if err != nil {
 		return fmt.Errorf("Failed to create tempfile: %w", err)
 	}
@@ -106,7 +106,7 @@ func UpdateSelf() error {
 		_ = os.Remove(tmp.Name())
 	}()
 	if err = tmp.Chmod(0o755); err != nil {
-		return fmt.Errorf("Failed to chmod 755", tmp.Name()+":", err)
+		return fmt.Errorf("Failed to chmod %s: %w", tmp.Name(), err)
 	}
 
 	if _, err = io.Copy(tmp, res.Body); err != nil {
